@@ -13,7 +13,7 @@
  */
 static VREPClient VREP;
 
-static double matrix [4][6][3] =
+static double FRAMES [4][6][3] =
 {
     {
 
@@ -177,56 +177,28 @@ static void moveBackLeg(int leg, double dephas, double t)
 }
 */
 
-static void applyMatrix(double t, int frame)
+static void applyFRAMES(double t)
 {
+
+	int frame = t*4;
+    frame = frame%4;
+    int offset = t / frame * frame;
+    double ti0 = frame + offset;
+    double ti1 = (frame + 1) + offset;
     for(int i = 0; i != 6;i++)
     {
-        /*
-        VREP.getMotor(i*3).writePos(*((matrix+i*3) + 0));
-        VREP.getMotor((i*3)+1).writePos(*((matrix+i*3) + 1));
-        VREP.getMotor((i*3)+2).writePos(*((matrix+i*3) + 2));
-        */
+        double new_pos0 = (FRAMES[frame][i][0]) + (((t-ti0)/(ti1-ti0)) * ((FRAMES[frame+1][i][0]) - (FRAMES[frame][i][0])));
+        double new_pos1 = (FRAMES[frame][i][1]) + (((t-ti0)/(ti1-ti0)) * ((FRAMES[frame+1][i][1]) - (FRAMES[frame][i][1])));
+        double new_pos2 = (FRAMES[frame][i][2]) + (((t-ti0)/(ti1-ti0)) * ((FRAMES[frame+1][i][2]) - (FRAMES[frame][i][2])));
+        VREP.getMotor(i*3).writePos(new_pos0);
+        VREP.getMotor((i*3)+1).writePos(new_pos1);
+        VREP.getMotor((i*3)+2).writePos(new_pos2);
     }
 }
 
 static void moveMotorsStep(double t)
 {
-    int frame = t*4;
-    frame = frame%4;
-
-    int offset = t / frame * frame;
-
-    double ti0 = frame + offset;
-    double ti1 = (frame + 1) + offset;
-
-    for (int i = 0; i != 6; i++)
-    {
-        double new_pos0 = (matrix[frame][i][0]) + (((t-ti0)/(ti1-ti0)) * ((matrix[frame+1][i][0]) - (matrix[frame][i][0])));
-        double new_pos1 = (matrix[frame][i][1]) + (((t-ti0)/(ti1-ti0)) * ((matrix[frame+1][i][1]) - (matrix[frame][i][1])));
-        double new_pos2 = (matrix[frame][i][2]) + (((t-ti0)/(ti1-ti0)) * ((matrix[frame+1][i][2]) - (matrix[frame][i][2])));
-        VREP.getMotor(i*3).writePos(new_pos0);
-        VREP.getMotor((i*3)+1).writePos(new_pos1);
-        VREP.getMotor((i*3)+2).writePos(new_pos2);
-    }
-
-
-/*
-    fixLeg(12);
-    fixLeg(15);
-
-
-    //Right Middle
-    moveSideLeg(0,0,t);
-    //Left Middle
-    moveSideLeg(9,M_PI,t);
-    //Front Left
-    moveFrontLeg(3,M_PI/2.5,t);
-    //Front Right
-    moveFrontLeg(6,M_PI/2.5,t);
-
-    //moveBackLeg(12,M_PI,t);
-    //moveBackLeg(15,0, t);
-*/
+	applyFRAMES(t);
 }
 
 
