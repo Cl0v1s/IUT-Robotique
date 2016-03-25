@@ -138,30 +138,61 @@ static void displayState()
     cout << "Y=" << VREP.readPositionTrackerY() << " ";
     cout << "Z=" << VREP.readPositionTrackerZ() << endl;
 }
+/*
+static void moveSideLeg(int leg,double dephas,double t)
+{
+    double shoulder = sin(2000*t + dephas);
+    double rotula = sin(2000*t + M_PI/2);
+
+    VREP.getMotor(leg).writePos(shoulder);
+    VREP.getMotor(leg+1).writePos(rotula);
+    VREP.getMotor(leg+2).writePos(0);
+}
+
+static void fixLeg(int leg)
+{
+    VREP.getMotor(leg).writePos(0);
+    VREP.getMotor(leg+1).writePos(0);
+    VREP.getMotor(leg+2).writePos(0);
+}
+
+static void moveFrontLeg(int leg, double dephas, double t)
+{
+    double shoulder = 0;
+    double rotula = sin(2000*t+dephas);
+    double finger = sin(2000*t+dephas)+0.2;
+    VREP.getMotor(leg).writePos(shoulder);
+    VREP.getMotor(leg+1).writePos(rotula);
+    VREP.getMotor(leg+2).writePos(finger);
+}
+/*
+static void moveBackLeg(int leg, double dephas, double t)
+{
+    double shoulder = 0;
+    double rotula = 0.3*sin(20000*t+dephas)-0.3;
+    double finger = 0;
+    VREP.getMotor(leg).writePos(shoulder);
+    VREP.getMotor(leg+1).writePos(rotula);
+    VREP.getMotor(leg+2).writePos(finger);
+}
+*/
 
 static void applyFRAMES(double t)
 {
-	int frame = t;
-	frame = frame%4;
-	for(int i = 0; i != 6;i++)
-	{
-		/*double new_pos0 = (FRAMES[frame][i][0]) + (((t-ti0)/(ti1-ti0)) * ((FRAMES[frame+1][i][0]) - (FRAMES[frame][i][0])));
-		double new_pos1 = (FRAMES[frame][i][1]) + (((t-ti0)/(ti1-ti0)) * ((FRAMES[frame+1][i][1]) - (FRAMES[frame][i][1])));
-		double new_pos2 = (FRAMES[frame][i][2]) + (((t-ti0)/(ti1-ti0)) * ((FRAMES[frame+1][i][2]) - (FRAMES[frame][i][2])));*/
-        float alpha = t - ((int)t);
-        float distanceY1 = FRAMES[frame+1][i][0] - FRAMES[frame][i][0];
-        float distanceY2 = FRAMES[frame+1][i][1] - FRAMES[frame][i][1];
-        float distanceY3 = FRAMES[frame+1][i][2] - FRAMES[frame][i][2];
 
-		VREP.getMotor(i*3).writePos(distanceY1*alpha);
-		VREP.getMotor((i*3)+1).writePos(distanceY2*alpha);
-		VREP.getMotor((i*3)+2).writePos(distanceY3*alpha);
-	}
+    int frame = t*4;
+    frame = frame%4;
+    for(int i = 0; i != 6;i++)
+    {
+        VREP.getMotor(i*3).writePos(FRAMES[frame][i][0]);
+        VREP.getMotor((i*3)+1).writePos(FRAMES[frame][i][1]);
+        VREP.getMotor((i*3)+2).writePos(FRAMES[frame][i][2]);
+    }
 }
 
 static void moveMotorsStep(double t)
 {
-	applyFRAMES(t);
+    applyFRAMES(t);
 }
 
 
