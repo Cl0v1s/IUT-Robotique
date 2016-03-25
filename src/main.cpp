@@ -15,44 +15,43 @@ static VREPClient VREP;
 
 static double FRAMES [4][6][3] =
 {
-    {
-
-        {0, 0,0},
-        {0, -0.2,0},
-        {0, 0.2,0},
-        {0, -0.2, 0},
-        {0, 0,0},
-        {0, 0.2,-0.6},
-    },
-
-    {
-
-        {0.6, 0,0},//patte arrière droite
-        {0.6, -0.2,0},//patte avant droite
-        {0, 0.6,0.2},//patte avant
-        {-0.6, -0.2, 0},//patte avant gauche
-        {-0.6, 0,0},//patte arrière gauche
-        {0, 0.2,0},//patte arrière
-    },
-
-    {
-
-        {0.6, -0.2,0},
-        {0.6, 0,0},//
-        {0, -0.6,0.6},
-        {-0.6, 0, 0},//
-        {-0.6, -0.2,0},
-        {0, -0.2,0.6},
-    },
-
-    {
-
+   {
         {-0.6, 0,0},
-        {-0.6, 0,0},//
-        {0, -0.2,0},
-        {0.6, 0, 0},//
+        {0, 0,-1},
         {0.6, 0,0},
-        {0, -0.2,0.6},
+        {-0.6, 0.5,-0.5},
+        {0, 0,0},
+        {-0.6, 0.5,-0.5},
+    },
+
+    {
+
+        {0.6, 0,0},
+        {0, 1,0},
+        {-0.6, 0,0},
+        {-0.6, 0.5,-0.5},
+        {0, 0.3,-1},
+        {-0.6, 0.5,-0.5},
+    },
+
+    {
+
+        {0.6, 0.5,-0.5},
+        {0, 0,0},//
+        {-0.6, 0.5,-0.5},
+        {-0.6, 0.5,-0.5},
+        {0, 0,0},
+        {-0.6, 0.5,-0.5},
+    },
+
+    {
+
+        {-0.6, 0.5,-0.5},
+        {-0, 0,0},//
+        {0.6, 0.5,-0.5},
+       {-0.6, 0.5,-0.5},
+        {0, 0,0},
+        {-0.6, 0.5,-0.5},
     },
 };
 
@@ -148,14 +147,14 @@ static void applyFRAMES(double t)
 		/*double new_pos0 = (FRAMES[frame][i][0]) + (((t-ti0)/(ti1-ti0)) * ((FRAMES[frame+1][i][0]) - (FRAMES[frame][i][0])));
 		double new_pos1 = (FRAMES[frame][i][1]) + (((t-ti0)/(ti1-ti0)) * ((FRAMES[frame+1][i][1]) - (FRAMES[frame][i][1])));
 		double new_pos2 = (FRAMES[frame][i][2]) + (((t-ti0)/(ti1-ti0)) * ((FRAMES[frame+1][i][2]) - (FRAMES[frame][i][2])));*/
-        float alpha = t - ((int)t);
+        double alpha = t - ((int)t);
         float distanceY1 = FRAMES[frame+1][i][0] - FRAMES[frame][i][0];
         float distanceY2 = FRAMES[frame+1][i][1] - FRAMES[frame][i][1];
         float distanceY3 = FRAMES[frame+1][i][2] - FRAMES[frame][i][2];
 
-		VREP.getMotor(i*3).writePos(distanceY1*alpha);
-		VREP.getMotor((i*3)+1).writePos(distanceY2*alpha);
-		VREP.getMotor((i*3)+2).writePos(distanceY3*alpha);
+		VREP.getMotor(i*3).writePos(FRAMES[frame][i][0] + distanceY1*alpha);
+		VREP.getMotor((i*3)+1).writePos(FRAMES[frame][i][1] +distanceY2*alpha);
+		VREP.getMotor((i*3)+2).writePos(FRAMES[frame][i][2] +distanceY3*alpha);
 	}
 }
 
