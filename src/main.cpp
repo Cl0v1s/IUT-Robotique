@@ -13,48 +13,6 @@
  */
 static VREPClient VREP;
 
-static double FRAMES [4][6][3] =
-{
-    {
-
-        {0, 0,0},
-        {0, -0.2,0},
-        {0, 0.2,0},
-        {0, -0.2, 0},
-        {0, 0,0},
-        {0, 0.2,-0.6},
-    },
-
-    {
-
-        {0.6, 0,0},//patte arrière droite
-        {0.6, -0.2,0},//patte avant droite
-        {0, 0.6,0.2},//patte avant
-        {-0.6, -0.2, 0},//patte avant gauche
-        {-0.6, 0,0},//patte arrière gauche
-        {0, 0.2,0},//patte arrière
-    },
-
-    {
-
-        {0.6, -0.2,0},
-        {0.6, 0,0},//
-        {0, -0.6,0.6},
-        {-0.6, 0, 0},//
-        {-0.6, -0.2,0},
-        {0, -0.2,0.6},
-    },
-
-    {
-
-        {-0.6, 0,0},
-        {-0.6, 0,0},//
-        {0, -0.2,0},
-        {0.6, 0, 0},//
-        {0.6, 0,0},
-        {0, -0.2,0.6},
-    },
-};
 
 using namespace std;
 
@@ -138,7 +96,7 @@ static void displayState()
     cout << "Y=" << VREP.readPositionTrackerY() << " ";
     cout << "Z=" << VREP.readPositionTrackerZ() << endl;
 }
-/*
+
 static void moveSideLeg(int leg,double dephas,double t)
 {
     double shoulder = sin(2000*t + dephas);
@@ -165,7 +123,7 @@ static void moveFrontLeg(int leg, double dephas, double t)
     VREP.getMotor(leg+1).writePos(rotula);
     VREP.getMotor(leg+2).writePos(finger);
 }
-/*
+
 static void moveBackLeg(int leg, double dephas, double t)
 {
     double shoulder = 0;
@@ -175,24 +133,25 @@ static void moveBackLeg(int leg, double dephas, double t)
     VREP.getMotor(leg+1).writePos(rotula);
     VREP.getMotor(leg+2).writePos(finger);
 }
-*/
 
-static void applyFRAMES(double t)
-{
-
-    int frame = t*4;
-    frame = frame%4;
-    for(int i = 0; i != 6;i++)
-    {
-        VREP.getMotor(i*3).writePos(FRAMES[frame][i][0]);
-        VREP.getMotor((i*3)+1).writePos(FRAMES[frame][i][1]);
-        VREP.getMotor((i*3)+2).writePos(FRAMES[frame][i][2]);
-    }
-}
 
 static void moveMotorsStep(double t)
 {
-    applyFRAMES(t);
+    fixLeg(0);
+    fixLeg(3);
+    fixLeg(6);
+    fixLeg(9);
+    fixLeg(12);
+    fixLeg(15);
+
+    moveFrontLeg(0,0,t);
+    moveFrontLeg(3,M_PI/3,t);
+    //moveSideLeg(6,0,t);
+    moveFrontLeg(9,M_PI/2,t);
+    moveFrontLeg(12,M_PI,t);
+    //moveSideLeg(15,M_PI,t);
+
+
 }
 
 
