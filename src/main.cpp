@@ -144,12 +144,21 @@ static void moveMotorsStep(double t)
     fixLeg(12);
     fixLeg(15);
 
-    moveFrontLeg(0,0,t);
-    moveFrontLeg(3,M_PI/3,t);
-    //moveSideLeg(6,0,t);
-    moveFrontLeg(9,M_PI/2,t);
-    moveFrontLeg(12,M_PI,t);
-    //moveSideLeg(15,M_PI,t);
+    moveFrontLeg(9,0,t);
+    //moveFrontLeg(3,0,t);
+
+    moveSideLeg(3,0,t);
+    moveSideLeg(6,0,t);
+
+    moveSideLeg(12,M_PI,t);
+    moveSideLeg(15,M_PI,t);
+    //moveSideLeg(15,0,t);
+
+
+
+    moveBackLeg(0,M_PI,t);
+    //moveBackLeg(12,M_PI,t);
+
 
 
 }
